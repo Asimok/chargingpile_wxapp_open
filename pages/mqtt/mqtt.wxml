@@ -1,0 +1,6 @@
+
+<view class="header">下发指令</view>
+<button class="btn" bindtap="charge_open">充电</button>
+
+<button class="btn" bindtap='getScancode'>扫码</button>
+
