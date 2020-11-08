@@ -1,66 +1,75 @@
 //支付成功后跳转
 const mqtt = require('../../utils/mqtt.min.js');
-const clientId = "wx_test" + Date.parse(new Date());
+const clientId = "wx_open" + Date.parse(new Date());
 var url = 'wx://119.45.181.212:8083/mqtt';
 var client = mqtt.connect(url, {
   clientId: clientId
 });
+client.on('connect', function () {
+  console.log('MQTT连接成功');
+  wx.showToast({
+    title: "MQTT连接成功", // 标题
+    icon: "success", // 图标类型，默认success
+    duration: 2000 // 提示窗停留时间，默认1500ms
+  })
+
+});
+
 Page({
   data: {
-    topic_y2i: "230602NEPU001_Y2I",
-    topic_i2y: "230602NEPU001_I2Y",
-    open_id: "",
-    client_id: ""
-  },
-  onLoad: function () {
-    //this.get_openid();
-    this.initSocket();
-    //this.getScancode();
-  },
+    isShow: true,
+    status: "点击开始充电",
+    topic_y2i: "",
+    topic_i2y: "",
+    topic: "",
+    bsName: "",
+    bsID: "",
+    chargeID: "",
+    chargePort: "",
+    grp: "",
+    restTime: "",
+    openId: "",
 
-  onUnload: function () {
-    // 关闭连接
-    client.end();
+    charge_time: "",
+    fee: ""
   },
-  getScancode: function () {
-    wx.scanCode({
-      success: (res) => {
-        var result = res.result;
-        var sta_obj = JSON.parse(result)
-        this.data.client_id = sta_obj.client_id
+  onLoad: function (e) {
+    console.log("mqtt界面收到的参数")
+    var test = '{"bsID":"250","chargeID":"230602NEPU001","grp":"D001","chargePort":"RT02","restTime":216000000,"openId":"oxiix4rhiv1av9T834QExcFmcbRA","topic":"230602NEPU001","charge_time":"60","fee":1}'
+    // var test = e.data
+    this.connectMqtt(test)
+  },
+  connectMqtt: function (test) {
+    var rec_data = JSON.parse(test)
+    console.log(rec_data)
+    this.setData({
+      topic_y2i: rec_data.topic + "_Y2I",
+      topic_i2y: rec_data.topic + "_I2Y",
 
-        var temp_code = {
-          "client_id": this.data.client_id,
-          "open_id": this.data.open_id,
-          "code": "open"
-        }
-        var str = JSON.stringify(temp_code);
-        console.log(str);
-        client.publish(this.data.topic_y2m, str);
-      }
+      bsID: rec_data.bsID,
+      chargeID: rec_data.chargeID,
+      chargePort: rec_data.chargePort,
+      grp: rec_data.grp,
+      restTime: rec_data.restTime,
+      openId: rec_data.openId,
+
+      charge_time: rec_data.charge_time,
+      fee: rec_data.fee
     })
+
+    this.suscribeTopic();
   },
-  initSocket: function () {
-    //小程序中只能用wxs://开头
-    this.setData.cc = client;
-    var that =this
+  suscribeTopic: function () {
+    var that = this
     var topic_i2y = this.data.topic_i2y;
-    client.on('connect', function () {
-      console.log('MQTT连接成功');
-      wx.showToast({
-        title: "MQTT连接成功", // 标题
-        icon: "success", // 图标类型，默认success
-        duration: 1000 // 提示窗停留时间，默认1500ms
-      })
-      //订阅
-      client.subscribe(topic_i2y);
-      //开放式小程序上线
-      client.publish("wxapp_open_status", '小程序上线');
-    })
+    console.log("订阅>>>>>>>" + topic_i2y)
+    client.subscribe(topic_i2y)
+    //开放式小程序上线
+    client.publish("wxapp_open_status", '小程序上线');
 
     client.on('message', function (topic, payload) {
       console.log(topic.toString() + "收到消息");
-      //  console.log(payload.toString());
+      // console.log(payload.toString());
       var rec_message = payload.toString()
       //判断包含字符串
       if (rec_message.indexOf("AckWriteData") >= 0) {
@@ -70,69 +79,162 @@ Page({
         var No = no_ack.No
         // console.log(no_ack)
         console.log("解析消息");
-        console.log(No)
+        //console.log(No)
         //No相同的话开始充电成功
-        that.opened_chargingpile()
+        that.show_opened_chargingpile()
       }
     })
+
   },
-  opened_chargingpile: function () {
+  onUnload: function () {
+    // 关闭连接
+    client.end();
+  },
+  //充电成功 推送消息 从订阅开始
+  show_opened_chargingpile: function () {
     wx.showToast({
       title: "开始充电", // 标题
       icon: "success", // 图标类型，默认success
       duration: 2000 // 提示窗停留时间，默认1500ms
     })
+    this.openbook()
   },
-  charge_open: function () {
+  //下发充电指令
+  btn_charge_open: function () {
+
     var topic = this.data.topic_y2i;
+    console.log("下发指令topic>>>>> " + topic)
     //充电指令
-    var code = '{"WriteData": {"No": ' + Date.parse(new Date()) + ',"Node": [{"Name": "D001.RT05","Value": "5"}]}}'
+    // var code = '{"WriteData": {"No": ' + Date.parse(new Date()) + ',"Node": [{"Name": "D001.RT05","Value": "5"}]}}'
+    var code = '{"WriteData": {"No": ' + Date.parse(new Date()) + ',"Node": [{"Name": ' + this.data.grp + "." + this.data.chargePort + ',"Value": ' + this.data.charge_time + '}]}}'
     client.publish(topic, code);
   },
+  //订阅
+  subscribe: function () {
+    var that = this
+    console.log("订阅")
+    wx.requestSubscribeMessage({
+      tmplIds: ['_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ'],
+      success(res) {
+        console.log("订阅成功")
+        //console.log(res)
+        that.get_access_token()
+      },
+      fail(res) {
+        console.log("订阅失败")
+        console.log(res);
+      }
+    })
 
-  get_openid: function () {
-    var that = this;
-    // 查看是否授权
-    wx.getSetting({
+  },
+  //获取access_token
+  get_access_token: function () {
+    var that = this
+    var access_token = ''
+    wx.request({
+      url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3',
+      method: 'GET',
       success: function (res) {
-        if (res.authSetting['scope.userInfo']) {
-          wx.getUserInfo({
-            success: function (res) {
-              // 用户已经授权过,不需要显示授权页面,所以不需要改变 isHide 的值
-              // 根据自己的需求有其他操作再补充
-              // 我这里实现的是在用户授权成功后，调用微信的 wx.login 接口，从而获取code
-              wx.login({
-                success: res => {
-                  // 获取到用户的 code 之后：res.code
-                  that.setData({
-                    user_code: res.code
-                  })
-                  console.log("用户的code:" + res.code);
-                  // 可以传给后台，再经过解析获取用户的 openid
-                  // 或者可以直接使用微信的提供的接口直接获取 openid ，方法如下：
-                  wx.request({
-                    // 自行补上自己的 APPID 和 SECRET
-                    url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx7914fb57922f9fe0&secret=f3e581686ae7cc6bbe0f2b912896cf5a&js_code=' + res.code + '&grant_type=authorization_code',
-                    success: res => {
-                      // 获取到用户的 openid
-                      that.setData({
-                        open_id: res.data.openid
-                      })
-                      console.log("用户的openid:" + res.data.openid);
-                    }
-                  });
-                }
-              });
-            }
-          });
+        // console.log(res)
+        access_token = res.data.access_token
+        that.getName(access_token)
+      }
+    })
+  },
+  //获取车棚名称
+  getName(ACCESS_TOKEN) {
+    var that = this
+    //获取车棚名称
+    wx.request({
+      url: 'http://192.168.1.224:8081/bikeshed/name',
+      method: "GET",
+      data: {
+        "bsId": that.data.bsID
+      },
+      success: function (res) {
+        console.log("获取车棚名称")
+        console.log(res)
+        if (res.data.bsName == "-1") {
+          that.data.bsName = "暂未录入车棚名称"
+
         } else {
-          // 用户没有授权
-          // 改变 isHide 的值，显示授权页面
-          that.setData({
-            isHide: true
-          });
+          that.data.bsName = res.data.bsName
+          that.send(ACCESS_TOKEN)
         }
       }
-    });
-  }
+    })
+    console.log("车棚名称" + that.data.bsName)
+
+  },
+  //推送
+  send: function (ACCESS_TOKEN) {
+    console.log("推送")
+    console.log("获取车棚名称")
+    var that = this
+
+    wx.request({
+      url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' + ACCESS_TOKEN,
+      method: 'POST',
+      data: {
+        "touser": that.data.openId,
+        "template_id": "_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ",
+        "page": "main",
+        "miniprogram_state": "developer",
+        "lang": "zh_CN",
+        "data": {
+          "thing1": {
+            "value": that.data.bsName
+          },
+          "character_string2": {
+            "value": that.data.chargeID
+          },
+          "thing14": {
+            "value": that.data.chargePort
+          },
+          "thing5": {
+            "value": that.data.charge_time +" 分钟"
+          },
+          "amount10": {
+            "value": that.data.fee + " 元"
+          }
+        }
+      },
+
+      success: function (res) {
+        console.log("推送成功")
+        // console.log(res)
+        that.setData({
+          isShow: false,
+          status: "正在充电"
+        })
+      }
+    })
+  },
+  //调用充电接口
+  openbook: function () {
+
+    wx.request({
+      url: 'http://192.168.1.224:8081/open/book',
+      method: "POST",
+      data: {
+        "bsId": this.data.bsID,
+        "cpId": this.data.chargeID,
+        "grp": this.data.grp,
+        "portWay": this.data.chargePort,
+        "restTime": this.data.charge_time * 60 * 1000,
+        "openId": this.data.openId
+      },
+      success: function (res) {
+        console.log("充电成功接口")
+        console.log(res)
+      }
+    })
+  },
+  //开始充电
+  open_tap: function () {
+   
+    this.subscribe()
+
+  },
+
 })

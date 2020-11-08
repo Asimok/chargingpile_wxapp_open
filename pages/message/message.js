@@ -3,7 +3,6 @@
 const app = getApp()
 Page({
 
-
   data: {
     open_id: ""
   },
@@ -13,20 +12,8 @@ Page({
 this.get_openid()
 
   },
-//获取access_token
-  get_access_token: function () {
-    var that =this
-    var access_token = ''
-    wx.request({
-      url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3',
-      method: 'GET',
-      success: function (res) {
-        console.log(res)
-        access_token = res.data.access_token
-        that.send(access_token)
-      }
-    })
-  },
+
+
 
   //订阅
 subscribe: function(){
@@ -45,6 +32,20 @@ subscribe: function(){
     }
   })
   
+},
+//获取access_token
+get_access_token: function () {
+  var that =this
+  var access_token = ''
+  wx.request({
+    url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3',
+    method: 'GET',
+    success: function (res) {
+      console.log(res)
+      access_token = res.data.access_token
+      that.send(access_token)
+    }
+  })
 },
 //推送
   send: function (ACCESS_TOKEN) {
@@ -87,6 +88,7 @@ subscribe: function(){
 
 
   },
+
   //获取openid
   get_openid: function () {
     console.log("获取我的界面的code");
@@ -102,8 +104,7 @@ subscribe: function(){
                   that.setData({
                     user_code: res.code
                   })
-                  console.log("获取我的界面的code:" + res.code);
-
+                  console.log("mqtt界面的code>>>>:" + res.code);
                   wx.request({
                     // 自行补上自己的 APPID 和 SECRET
                     url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3&js_code=' + res.code + '&grant_type=authorization_code',
@@ -112,7 +113,7 @@ subscribe: function(){
                       that.setData({
                         open_id: res.data.openid
                       })
-                      console.log("获取我的界面的openid:" + res.data.openid);
+                      console.log("mqtt界面的openid>>>>:" + res.data.openid);
                     }
                   });
                 }

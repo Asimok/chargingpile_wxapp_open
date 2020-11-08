@@ -12,6 +12,7 @@ Page({
     openId: ""
   },
   onLoad: function (e) {
+    console.log("带来的数据")
     console.log(e)
     this.data.openId = e.openid
   },
@@ -123,7 +124,7 @@ Page({
     var that = this;
     console.log("请求验证码")
     var phoneNum = this.data.phoneNum;
-    console.log('phone' + phoneNum)
+    
     wx.request({
       url: 'http://192.168.1.224:8081/vc/getCode',
       data: {
@@ -161,7 +162,8 @@ Page({
         icon: 'success',
         duration: 2000
       });
-      //注册
+      this.regist()
+
     } else {
       wx.showToast({
         title: '验证失败,请重新获取验证码',
@@ -174,16 +176,29 @@ Page({
   //注册
   regist: function () {
     var that = this
+    console.log("注册信息")
+    console.log(that.data.phoneNum)
+    console.log(that.data.openId)
     wx.request({
-      url: 'http://192.168.1.224:8081/vc/reg',
+      url: 'http://192.168.1.224:8081/register/open',
       data: {
-        phone: that.data.phoneNum,
+        telNumber: that.data.phoneNum,
         openId: that.data.openId,
       },
       method: 'POST',
       success: function (res) {
         console.log(res)
-
+        wx.showToast({
+          title: res.data.status,
+          duration: 2000
+        });
+        if(res.data.status=="成功")
+        {
+          //跳转
+          wx.reLaunch({
+            url: '/pages/main/main',
+        })
+        }
       },
       fail: function (res) {
         console.log(res)

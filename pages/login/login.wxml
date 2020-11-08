@@ -21,6 +21,3 @@
 <button class='bottom' type='primary' open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="bindGetUserInfo">
 	授权登录
 </button>
-<button class='bottom' type='primary'  lang="zh_CN" bindtap="register">
-	测试注册
-</button>
