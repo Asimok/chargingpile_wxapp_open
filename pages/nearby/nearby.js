@@ -1,4 +1,4 @@
-const type =3
+const type =1
 Page({
 
   data: {
@@ -49,8 +49,8 @@ Page({
     console.log(that.data.longitude);
     wx.request({
 
-      url: 'http://192.168.1.224:8081/bikeshed/closebs?longitude=' + that.data.longitude + '&latitude=' + that.data.latitude + '&number=-1',
-      // url: 'http://192.168.1.224:8081/chargepile/closebs?longitude=125.160005&latitude=46.595538&number=2',
+      url: 'http://www.hzsmartnet.com/bikeshed/closebs?longitude=' + that.data.longitude + '&latitude=' + that.data.latitude + '&number=-1',
+      // url: 'http://www.hzsmartnet.com/chargepile/closebs?longitude=125.160005&latitude=46.595538&number=2',
       method: "GET",
 
       success: function (res) {

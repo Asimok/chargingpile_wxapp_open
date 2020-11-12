@@ -1,4 +1,4 @@
-const type = 3
+const type = 1
 Page({
 
   data: {
@@ -16,11 +16,11 @@ Page({
     //获得openid之后判断是否登录过
     this.getloc()
   },
-//   onShow(){
-//     //调用函数、方法
-//     var that=this;
-//     that.onLoad();
-// },
+  //   onShow(){
+  //     //调用函数、方法
+  //     var that=this;
+  //     that.onLoad();
+  // },
   //获取位置
   getloc: function () {
     var that = this;
@@ -95,18 +95,17 @@ Page({
     var newsListArr = [];
     wx.request({
 
-      url: 'http://192.168.1.224:8081/bikeshed/closebs?longitude=' + that.data.longitude + '&latitude=' + that.data.latitude + '&number=2',
-      // url: 'http://192.168.1.224:8081/bikeshed/closebs?longitude=125.160005&latitude=46.595538&number=-1',
+      url: 'http://www.hzsmartnet.com/bikeshed/closebs?longitude=' + that.data.longitude + '&latitude=' + that.data.latitude + '&number=-1',
+      // url: 'http://www.hzsmartnet.com/bikeshed/closebs?longitude=125.160005&latitude=46.595538&number=-1',
       method: "GET",
 
       success: function (res) {
         // console.log("首页——获取的附近车棚数据")
-        // console.log(res)
+        console.log(res)
         for (var i = 0; i < res.data.data.length; i++) {
           var tempd = parseFloat(res.data.data[i].distance).toFixed(0);
 
           if (tempd < 1000) {
-            //  console.log( parseInt(res.data.data[i].distance) );
             res.data.data[i].distance = String(tempd) + "m"
           } else {
             res.data.data[i].distance = String((tempd / 1000).toFixed(2)) + "km"
@@ -125,7 +124,11 @@ Page({
         }
         // console.log("首页——获取的附近车棚数据>>>>>>>处理后数据")
         // console.log(templist)
-        newsListArr = templist;
+        if (templist.length > 2) {
+          newsListArr.push(templist[0]);
+          newsListArr.push(templist[1]);
+        } else
+          newsListArr.push(templist[0])
 
         if (!res.data.length) {
           that.setData({
@@ -176,7 +179,7 @@ Page({
     console.log("发送到后端的用户信息： ");
     console.log(temp_send_data);
     wx.request({
-      url: 'http://192.168.1.224:8081/login/open',
+      url: 'http://www.hzsmartnet.com/login/open',
       method: "POST",
       data: temp_send_data,
       // 解析注册状态

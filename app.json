@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/main/main",
-    "pages/video/video",
     "pages/mqtt/mqtt",
+    "pages/video/video",
     "pages/pay/pay",
     "pages/login/login",
     "pages/search_bikeshed/search_bikeshed",

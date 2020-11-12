@@ -84,7 +84,7 @@ Page({
         console.log("发送到后端的用户信息： ");
         console.log(temp_send_data);
         wx.request({
-            url: 'http://192.168.1.224:8081/login/open',
+            url: 'http://www.hzsmartnet.com/login/open',
             method: "POST",
             data: temp_send_data,
             // 解析注册状态

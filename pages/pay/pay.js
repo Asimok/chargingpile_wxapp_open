@@ -51,7 +51,7 @@ Page({
     var that =this
       //请求1元的价格
       wx.request({
-        url: 'http://192.168.1.224:8081/money/get/'+this.data.bsID,
+        url: 'http://www.hzsmartnet.com/money/get/'+this.data.bsID,
         method: "GET",
         success: function (res) {
           var getLIst=[]
@@ -82,7 +82,7 @@ Page({
     this.data.fee =e.detail.value
     console.log('radio发生change事件，携带value值为：', checkPrice)
     wx.request({
-      url: 'http://192.168.1.224:8081/money/get/'+that.data.bsID,
+      url: 'http://www.hzsmartnet.com/money/get/'+that.data.bsID,
       method: "GET",
       success: function (res) {
         var getLIst=[]
@@ -110,7 +110,7 @@ Page({
     var that =this
     //获取车棚名称
     wx.request({
-      url: 'http://192.168.1.224:8081/bikeshed/name',
+      url: 'http://www.hzsmartnet.com/bikeshed/name',
       method: "GET",
       data: {
         "bsId": that.data.bsID
@@ -136,19 +136,20 @@ Page({
     var fee = that.data.fee
     console.log(fee)
 
-    var tempdata =that.data.bsName+"_"+ that.data.bsID + "_" + that.data.chargeID + "_" +that.data.grp+"_"+
+    var tempdata ="充电_"+that.data.bsName+"_"+ that.data.bsID + "_" + that.data.chargeID + "_" +that.data.grp+"_"+
      that.data.chargePort + "_"+ that.data.charge_time + "分钟"
     var temp_json = {
       "openId": that.data.openId,
+      "appId":"wx0f57e9c304a06353",
       "goods_name": tempdata,
-      "total_fee": fee,
+      "total_fee": fee*100,
       "trade_type": "JSAPI"
     }
     console.log("请求支付")
     console.log(temp_json)
 
     wx.request({
-      url: 'http://192.168.1.224:8081/pay',
+      url: 'http://www.hzsmartnet.com/pay',
       method: "POST",
       data: temp_json,
       success: (res) => {

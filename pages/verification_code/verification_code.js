@@ -126,7 +126,7 @@ Page({
     var phoneNum = this.data.phoneNum;
     
     wx.request({
-      url: 'http://192.168.1.224:8081/vc/getCode',
+      url: 'http://www.hzsmartnet.com/vc/getCode',
       data: {
         phone: phoneNum
       },
@@ -180,7 +180,7 @@ Page({
     console.log(that.data.phoneNum)
     console.log(that.data.openId)
     wx.request({
-      url: 'http://192.168.1.224:8081/register/open',
+      url: 'http://www.hzsmartnet.com/register/open',
       data: {
         telNumber: that.data.phoneNum,
         openId: that.data.openId,

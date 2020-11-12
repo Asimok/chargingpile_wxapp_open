@@ -25,7 +25,7 @@ Page({
     var newsListArr = [];
 
     wx.request({
-      url: 'http://192.168.1.224:8081/open/history',
+      url: 'http://www.hzsmartnet.com/open/history',
       data: {
         "openId": that.data.open_id
       },

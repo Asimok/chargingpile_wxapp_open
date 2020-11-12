@@ -27,7 +27,7 @@ Page({
     console.log("要搜索的车棚名称")
     console.log(that.data.bsName)
     wx.request({
-      url: 'http://192.168.1.224:8081/bikeshed/' + that.data.bsName,
+      url: 'http://www.hzsmartnet.com/bikeshed/' + that.data.bsName,
       method: "GET",
       success: function (res) {
         console.log("车棚数据")

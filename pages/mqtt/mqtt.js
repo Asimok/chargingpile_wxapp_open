@@ -1,7 +1,7 @@
 //支付成功后跳转
 const mqtt = require('../../utils/mqtt.min.js');
 const clientId = "wx_open" + Date.parse(new Date());
-var url = 'wx://119.45.181.212:8083/mqtt';
+var url = 'wx://www.hzsmartnet.com:8083/mqtt';
 var client = mqtt.connect(url, {
   clientId: clientId
 });
@@ -35,8 +35,8 @@ Page({
   },
   onLoad: function (e) {
     console.log("mqtt界面收到的参数")
-    var test = '{"bsID":"250","chargeID":"230602NEPU001","grp":"D001","chargePort":"RT02","restTime":216000000,"openId":"oxiix4rhiv1av9T834QExcFmcbRA","topic":"230602NEPU001","charge_time":"60","fee":1}'
-    // var test = e.data
+    // var test = '{"bsID":"250","chargeID":"230602NEPU001","grp":"D001","chargePort":"RT01","restTime":216000000,"openId":"oxiix4rhiv1av9T834QExcFmcbRA","topic":"230602NEPU001","charge_time":"240","fee":1}'
+    var test = e.data
     this.connectMqtt(test)
   },
   connectMqtt: function (test) {
@@ -109,15 +109,18 @@ Page({
     var code = '{"WriteData": {"No": ' + Date.parse(new Date()) + ',"Node": [{"Name": ' + this.data.grp + "." + this.data.chargePort + ',"Value": ' + this.data.charge_time + '}]}}'
     client.publish(topic, code);
   },
+
   //订阅
   subscribe: function () {
     var that = this
+    const tmplids = ["ESYI5HQSnW-5Ts27iyp1NwnyVrIgKgMS_2alhYw6JXM","_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ"]
     console.log("订阅")
+    console.log(tmplids)
     wx.requestSubscribeMessage({
-      tmplIds: ['_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ'],
+      tmplIds: tmplids,
       success(res) {
         console.log("订阅成功")
-        //console.log(res)
+        console.log(res)
         that.get_access_token()
       },
       fail(res) {
@@ -146,7 +149,7 @@ Page({
     var that = this
     //获取车棚名称
     wx.request({
-      url: 'http://192.168.1.224:8081/bikeshed/name',
+      url: 'http://www.hzsmartnet.com/bikeshed/name',
       method: "GET",
       data: {
         "bsId": that.data.bsID
@@ -170,8 +173,9 @@ Page({
   send: function (ACCESS_TOKEN) {
     console.log("推送")
     console.log("获取车棚名称")
+  
     var that = this
-
+    console.log(that.data.fee)
     wx.request({
       url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' + ACCESS_TOKEN,
       method: 'POST',
@@ -192,21 +196,22 @@ Page({
             "value": that.data.chargePort
           },
           "thing5": {
-            "value": that.data.charge_time +" 分钟"
+            "value": that.data.charge_time +"分钟"
           },
           "amount10": {
-            "value": that.data.fee + " 元"
+            "value": that.data.fee + "元"
           }
         }
       },
 
       success: function (res) {
         console.log("推送成功")
-        // console.log(res)
+        console.log(res)
         that.setData({
           isShow: false,
           status: "正在充电"
         })
+        that.btn_charge_open()
       }
     })
   },
@@ -214,7 +219,7 @@ Page({
   openbook: function () {
 
     wx.request({
-      url: 'http://192.168.1.224:8081/open/book',
+      url: 'http://www.hzsmartnet.com/open/book',
       method: "POST",
       data: {
         "bsId": this.data.bsID,
@@ -222,7 +227,8 @@ Page({
         "grp": this.data.grp,
         "portWay": this.data.chargePort,
         "restTime": this.data.charge_time * 60 * 1000,
-        "openId": this.data.openId
+        "openId": this.data.openId,
+        "price":this.data.fee
       },
       success: function (res) {
         console.log("充电成功接口")
