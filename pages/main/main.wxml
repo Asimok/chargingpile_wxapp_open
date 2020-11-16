@@ -15,27 +15,27 @@
 
 	<view class="subject">
 		<view class="subBox">
-			<navigator url="/pages/nearby/nearby">
+			<navigator url="/pages/nearby/nearby" bindtap="is_near_canuse">
 				<image src="/images/kecheng6.png"></image>
 				<view>附近车棚</view>
 			</navigator>
 		</view>
 		<view class="subBox">
-			<navigator url="/pages/mostuse/mostuse">
+			<navigator url="/pages/mostuse/mostuse" bindtap="is_near_canuse">
 				<image src="/images/kecheng2.png"></image>
 				<view>常用站点</view>
 			</navigator>
 		</view>
 
 		<view class="subBox">
-			<navigator url="/pages/search_bikeshed/search_bikeshed">
+			<navigator url="/pages/search_bikeshed/search_bikeshed" bindtap="is_near_canuse">
 				<image src="/images/kecheng3.png"></image>
 				<view>搜索车棚</view>
 			</navigator>
 		</view>
 
 	<view class="subBox">
-			<navigator url="/pages/videoItem/videoItem">
+			<navigator url="/pages/videoItem/videoItem" bindtap="is_near_canuse">
 				<image src="/images/kecheng4.png"></image>
 				<view>查看监控</view>
 			</navigator>
@@ -47,7 +47,7 @@
 
 	<view class="content">
 		<block wx:for="{{listArr}}" wx:key="key">
-			<nearbyView datas="{{item}}"> </nearbyView>
+			<nearbyView datas="{{item}}" bindtap="is_near_canuse"> </nearbyView>
 		</block>
 	</view>
 
@@ -55,5 +55,7 @@
 			<image src="/images/scan.png"></image>
 			<view>扫一扫充电</view>
 	</view>
-
+	<!-- <button class='bottom' type='primary' open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="bindGetUserInfo">
+	授权登录
+</button> -->
 </view>

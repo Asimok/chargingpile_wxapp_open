@@ -1,5 +1,4 @@
 //验证码
-// 18182737073
 Page({
   data: {
     send: false,
@@ -126,7 +125,7 @@ Page({
     var phoneNum = this.data.phoneNum;
     
     wx.request({
-      url: 'http://www.hzsmartnet.com/vc/getCode',
+      url: 'https://www.hzsmartnet.com/vc/getCode',
       data: {
         phone: phoneNum
       },
@@ -180,7 +179,7 @@ Page({
     console.log(that.data.phoneNum)
     console.log(that.data.openId)
     wx.request({
-      url: 'http://www.hzsmartnet.com/register/open',
+      url: 'https://www.hzsmartnet.com/register/open',
       data: {
         telNumber: that.data.phoneNum,
         openId: that.data.openId,

@@ -6,12 +6,11 @@
       <change beforePath="$PROJECT_DIR$/pages/history/history.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/history/history.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/login/login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/main/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/main/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/main/main.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/pages/main/main.wxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/mostuse/mostuse.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/mostuse/mostuse.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/mqtt/mqtt.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/mqtt/mqtt.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/nearby/nearby.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/nearby/nearby.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/pay/pay.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pay/pay.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/pay/pay.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pay/pay.wxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/pay/pay.wxss" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pay/pay.wxss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/search_bikeshed/search_bikeshed.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/search_bikeshed/search_bikeshed.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/verification_code/verification_code.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/verification_code/verification_code.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/videoItem/videoItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/videoItem/videoItem.js" afterDir="false" />
@@ -46,6 +45,7 @@
       <updated>1605195349639</updated>
       <workItem from="1605195351452" duration="22000" />
       <workItem from="1605196169485" duration="20000" />
+      <workItem from="1605444964868" duration="49000" />
     </task>
     <servers />
   </component>
@@ -53,9 +53,10 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="594" y="160" width="604" height="735" key="find.popup" timestamp="1605196184523">
-      <screen x="0" y="23" width="1792" height="1009" />
+    <state x="594" y="161" width="604" height="730" key="find.popup" timestamp="1605445011490">
+      <screen x="0" y="25" width="1792" height="1002" />
     </state>
     <state x="594" y="160" width="604" height="735" key="find.popup/0.23.1792.1009@0.23.1792.1009" timestamp="1605196184523" />
+    <state x="594" y="161" width="604" height="730" key="find.popup/0.25.1792.1002@0.25.1792.1002" timestamp="1605445011490" />
   </component>
 </project>

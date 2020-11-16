@@ -6,15 +6,19 @@ Page({
     listArr: [],
     latitude: '',
     longitude: '',
-    openId: ""
+    openId: "",
+    is_auth: false,
+    is_regist: false
   },
   onLoad: function (options) {
-    wx.showLoading({
-      title: '加载中...',
-    })
-    this.get_openid()
+    // wx.showLoading({
+    //   title: '加载中...',
+    // })
+
+    this.get_is_auth()
     //获得openid之后判断是否登录过
     this.getloc()
+
   },
   //   onShow(){
   //     //调用函数、方法
@@ -43,51 +47,35 @@ Page({
 
   },
   //获取openid
-  get_openid: function () {
+  get_is_auth: function () {
     var that = this;
-    // 查看是否授权
-    wx.getSetting({
-      success: function (res) {
-        if (res.authSetting['scope.userInfo']) {
-          wx.getUserInfo({
-            success: function (res) {
-              wx.login({
-                success: res => {
-                  // 获取到用户的 code 之后：res.code
-                  that.setData({
-                    user_code: res.code
-                  })
-                  console.log("主界面的code>>>>:" + res.code);
+    wx.cloud.callFunction({
+      name: 'get_openId',
+      complete: res => {
+        console.log('云函数获取到的openid:')
+        console.log(res.result)
+        var openid = res.result.openId;
+        if (openid != "") {
 
-                  wx.request({
-
-                    url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3&js_code=' + res.code + '&grant_type=authorization_code',
-                    success: res => {
-
-                      that.setData({
-                        openId: res.data.openid
-                      })
-                      console.log("主界面的openid>>>>" + res.data.openid);
-                      if (res.data.openid != "")
-                        that.isLogin(res.data.openid)
-                      else
-                        that.get_openid()
-                    }
-                  });
-                }
-              });
-            }
-          });
-        } else {
-          // 用户没有授权
-          // 改变 isHide 的值，显示授权页面
           that.setData({
-            isHide: true
-          });
+            openId: openid,
+            is_auth: true
+          })
+          console.log("已授权");
+          that.isLogin(openid)
+        } else {
+          console.log("未授权");
+          that.setData({
+            openId: "",
+            is_auth: false
+          })
+          that.get_is_auth()
         }
       }
     });
+
   },
+
   // 网络请求核心函数
   getRequest: function () {
 
@@ -95,10 +83,8 @@ Page({
     var newsListArr = [];
     wx.request({
 
-      url: 'http://www.hzsmartnet.com/bikeshed/closebs?longitude=' + that.data.longitude + '&latitude=' + that.data.latitude + '&number=-1',
-      // url: 'http://www.hzsmartnet.com/bikeshed/closebs?longitude=125.160005&latitude=46.595538&number=-1',
+      url: 'https://www.hzsmartnet.com/bikeshed/closebs?longitude=' + that.data.longitude + '&latitude=' + that.data.latitude + '&number=-1',
       method: "GET",
-
       success: function (res) {
         // console.log("首页——获取的附近车棚数据")
         console.log(res)
@@ -140,61 +126,117 @@ Page({
         })
         // console.log("展示车棚信息")
         // console.log(newsListArr)
-        wx.hideLoading()
+        // wx.hideLoading()
+      },
+      fail: function (res) {
+        console.log(res)
       }
     })
   },
   //扫码 跳转
   getScancode: function () {
+    // this.get_openid()
     var that = this
-    wx.scanCode({
-      success: (res) => {
-        var scan_data = res.result;
-        var scan_data_json = JSON.parse(scan_data)
-        //二维码内容
-        var send_scan_data = {
-          bsID: scan_data_json.bsID,
-          chargeID: scan_data_json.chargeID,
-          grp: scan_data_json.grp,
-          chargePort: scan_data_json.chargePort,
-          topic: scan_data_json.topic,
-          openId: that.data.openId
+    var can_use = this.data.is_regist
+    if (can_use)
+      wx.scanCode({
+        success: (res) => {
+          var scan_data = res.result;
+          var scan_data_json = JSON.parse(scan_data)
+          //二维码内容
+          var send_scan_data = {
+            bsID: scan_data_json.bsID,
+            chargeID: scan_data_json.chargeID,
+            grp: scan_data_json.grp,
+            chargePort: scan_data_json.chargePort,
+            topic: scan_data_json.topic,
+            openId: that.data.openId
+          }
+          var str = JSON.stringify(send_scan_data);
+          console.log("二维码数据")
+          console.log(send_scan_data)
+          //跳转
+          wx.navigateTo({
+            url: '/pages/pay/pay?data=' + str,
+          })
         }
-        var str = JSON.stringify(send_scan_data);
-        console.log("二维码数据")
-        console.log(send_scan_data)
-        //跳转
-        wx.navigateTo({
-          url: '/pages/pay/pay?data=' + str,
-        })
-      }
-    })
+      })
+    else {
+      wx.showModal({
+        title: '提示',
+        content: '此功能需要授权登录！',
+        success(res) {
+          if (res.confirm) {
 
+            that.bindGetUserInfo()
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    }
   },
+
+
   isLogin: function (temp_openid) {
     var that = this
     var temp_send_data = {
       openId: temp_openid
     };
-    console.log("发送到后端的用户信息： ");
+    console.log("判断是否注册： ");
     console.log(temp_send_data);
     wx.request({
-      url: 'http://www.hzsmartnet.com/login/open',
+      url: 'https://www.hzsmartnet.com/login/open',
       method: "POST",
       data: temp_send_data,
       // 解析注册状态
       success: (res) => {
         console.log(res.data)
         var status = res.data.status
-        console.log(res.data.status)
         if (status == -1) {
-          // 登录
-          wx.reLaunch({
-            url: '/pages/login/login',
+          that.setData({
+            is_regist: false
           })
+          console.log("未注册")
+          // 登录
+          // wx.reLaunch({
+          //   url: '/pages/login/login',
+          // })
+        } else if (status == 0) {
+          that.setData({
+            is_regist: true
+          })
+          console.log("已注册")
         }
       }
     })
-  }
+  },
+  bindGetUserInfo: function () {
+    wx.reLaunch({
+      url: '/pages/login/login',
+    })
+  },
+  is_near_canuse: function () {
+    var can_use = this.data.is_regist
+    if (!can_use)
+      wx.showModal({
+        title: '提示',
+        content: '此功能需要授权登录！',
+        success(res) {
+          if (res.confirm) {
+            // 登录
+            wx.reLaunch({
+              url: '/pages/login/login',
+            })
+          } else if (res.cancel) {
+            // 登录
+            wx.reLaunch({
+              url: '/pages/main/main',
+            })
+          }
+        }
+      })
+
+  },
 
 })

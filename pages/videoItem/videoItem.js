@@ -1,11 +1,9 @@
 
 Page({
-
   data: {
       onLoad:true,
       listArr:[],
       openId: "",
-     
   },
 
   onLoad: function (options) {
@@ -18,50 +16,26 @@ Page({
   //获取openid
   get_openid: function () {
     var that = this;
-    // 查看是否授权
-    wx.getSetting({
-      success: function (res) {
-        if (res.authSetting['scope.userInfo']) {
-          wx.getUserInfo({
-            success: function (res) {
-              wx.login({
-                success: res => {
-                  // 获取到用户的 code 之后：res.code
-                  that.setData({
-                    user_code: res.code
-                  })
-                  console.log("监控列表的code>>>>:" + res.code);
-
-                  wx.request({
-
-                    url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3&js_code=' + res.code + '&grant_type=authorization_code',
-                    success: res => {
-
-                      that.setData({
-                        openId: res.data.openid
-                      })
-                      var trmp_openId = ""
-                      console.log("监控列表的openid>>>>" + res.data.openid);
-                       trmp_openId = res.data.openid
-                      if(trmp_openId!="")
-                        that.getRequest()
-                        else
-                        that.get_openid()
-                    }
-                  });
-                }
-              });
-            }
-          });
-        } else {
-          // 用户没有授权
-          // 改变 isHide 的值，显示授权页面
+    wx.cloud.callFunction({
+      name: 'get_openId',
+      complete: res => {
+        console.log('云函数获取到的openid:')
+        console.log(res.result)
+        var openid = res.result.openId;
+        if (openid != "") {
           that.setData({
-            isHide: true
-          });
+            openId: openid
+          })
+          that.getRequest()
+        } else {
+          that.setData({
+            openId: ""
+          })
+          that.get_openid()
         }
       }
     });
+
   },
   // 网络请求核心函数
   getRequest:function(){
@@ -71,7 +45,7 @@ Page({
     var temp_json = {"openId":this.data.openId};
     console.log(temp_json)
     wx.request({
-      url:'http://www.hzsmartnet.com/open/camera',
+      url:'https://www.hzsmartnet.com/open/camera',
       data:{"openId":this.data.openId},
       method: "GET",
   
@@ -96,9 +70,6 @@ Page({
         wx.hideLoading()
       }
     })
-
-
-
   },
 
 })

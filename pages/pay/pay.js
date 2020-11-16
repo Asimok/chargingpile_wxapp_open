@@ -1,11 +1,10 @@
-
 Page({
   data: {
     payTime: "-",
     openId: "",
     bsID: "",
-    bsName:"",
-    grp:"",
+    bsName: "",
+    grp: "",
     chargeID: "",
     chargePort: "",
     startTime: "",
@@ -38,54 +37,53 @@ Page({
     this.setData({
       bsID: rec_data_json.bsID,
       chargeID: rec_data_json.chargeID,
-      grp:rec_data_json.grp,
+      grp: rec_data_json.grp,
       chargePort: rec_data_json.chargePort,
       topic: rec_data_json.topic,
       openId: rec_data_json.openId
     })
 
-  this.getPrice1()
+    this.getPrice1()
   },
-  getPrice1:function()
-  {
-    var that =this
-      //请求1元的价格
-      wx.request({
-        url: 'http://www.hzsmartnet.com/money/get/'+this.data.bsID,
-        method: "GET",
-        success: function (res) {
-          var getLIst=[]
-          console.log(res)
-          getLIst = res.data.data
-          console.log(getLIst)
-          for (var i = 0; i < getLIst.length; i++) {
-            if (getLIst[i].price == 1) {
-              that.data.charge_time = getLIst[i].time
-              break
-            }
+  getPrice1: function () {
+    var that = this
+    //请求1元的价格
+    wx.request({
+      url: 'https://www.hzsmartnet.com/money/get/' + this.data.bsID,
+      method: "GET",
+      success: function (res) {
+        var getLIst = []
+        console.log(res)
+        getLIst = res.data.data
+        console.log(getLIst)
+        for (var i = 0; i < getLIst.length; i++) {
+          if (getLIst[i].price == 1) {
+            that.data.charge_time = getLIst[i].time
+            break
           }
-          console.log("1元充电时长")
-          console.log( that.data.charge_time)
-          that.setData({
-            payTime: that.data.charge_time
-          })
-          that.data.fee=1
-
         }
-      })
+        console.log("1元充电时长")
+        console.log(that.data.charge_time)
+        that.setData({
+          payTime: that.data.charge_time
+        })
+        that.data.fee = 1
+
+      }
+    })
   },
   //选择价格计算时间
   radioChange: function (e) {
-    var that =this
-   
-    var checkPrice =e.detail.value
-    this.data.fee =e.detail.value
+    var that = this
+
+    var checkPrice = e.detail.value
+    this.data.fee = e.detail.value
     console.log('radio发生change事件，携带value值为：', checkPrice)
     wx.request({
-      url: 'http://www.hzsmartnet.com/money/get/'+that.data.bsID,
+      url: 'https://www.hzsmartnet.com/money/get/' + that.data.bsID,
       method: "GET",
       success: function (res) {
-        var getLIst=[]
+        var getLIst = []
         console.log(res)
         getLIst = res.data.data
         console.log(getLIst)
@@ -96,21 +94,21 @@ Page({
           }
         }
         console.log("充电时长")
-        console.log( that.data.charge_time)
+        console.log(that.data.charge_time)
         that.setData({
           payTime: that.data.charge_time
         })
 
       }
     })
-   
+
   },
   //获取车棚名称
-  getName(){
-    var that =this
+  getName() {
+    var that = this
     //获取车棚名称
     wx.request({
-      url: 'http://www.hzsmartnet.com/bikeshed/name',
+      url: 'https://www.hzsmartnet.com/bikeshed/name',
       method: "GET",
       data: {
         "bsId": that.data.bsID
@@ -121,12 +119,13 @@ Page({
         if (res.data.bsName == "-1") {
           that.data.bsName = "暂未录入车棚名称"
 
-        } else
-         { that.data.bsName = res.data.bsName
-          that.getpaydata()}
+        } else {
+          that.data.bsName = res.data.bsName
+          that.getpaydata()
+        }
       }
     })
-    console.log("车棚名称"+ that.data.bsName)
+    console.log("车棚名称" + that.data.bsName)
 
   },
   //后端支付接口 下订单
@@ -136,20 +135,20 @@ Page({
     var fee = that.data.fee
     console.log(fee)
 
-    var tempdata ="充电_"+that.data.bsName+"_"+ that.data.bsID + "_" + that.data.chargeID + "_" +that.data.grp+"_"+
-     that.data.chargePort + "_"+ that.data.charge_time + "分钟"
+    var tempdata = "充电_" + that.data.bsName + "_" + that.data.bsID + "_" + that.data.chargeID + "_" + that.data.grp + "_" +
+      that.data.chargePort + "_" + that.data.charge_time + "分钟"
     var temp_json = {
       "openId": that.data.openId,
-      "appId":"wx0f57e9c304a06353",
+      "appId": "wx0f57e9c304a06353",
       "goods_name": tempdata,
-      "total_fee": fee*100,
+      "total_fee": fee * 100,
       "trade_type": "JSAPI"
     }
     console.log("请求支付")
     console.log(temp_json)
 
     wx.request({
-      url: 'http://www.hzsmartnet.com/pay',
+      url: 'https://www.hzsmartnet.com/pay',
       method: "POST",
       data: temp_json,
       success: (res) => {
@@ -204,13 +203,13 @@ Page({
     var send_charge_data = {
       bsID: this.data.bsID,
       chargeID: this.data.chargeID,
-      grp:this.data.grp,
+      grp: this.data.grp,
       chargePort: this.data.chargePort,
-      restTime:this.data.charge_time,
-      openId:this.data.openId,
+      restTime: this.data.charge_time,
+      openId: this.data.openId,
       topic: this.data.topic,
-    
-      charge_time:this.data.charge_time,
+
+      charge_time: this.data.charge_time,
       fee: this.data.fee
     }
     var str = JSON.stringify(send_charge_data);

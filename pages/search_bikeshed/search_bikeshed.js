@@ -1,4 +1,4 @@
-const type =3
+const type = 3
 Page({
 
   data: {
@@ -27,7 +27,7 @@ Page({
     console.log("要搜索的车棚名称")
     console.log(that.data.bsName)
     wx.request({
-      url: 'http://www.hzsmartnet.com/bikeshed/' + that.data.bsName,
+      url: 'https://www.hzsmartnet.com/bikeshed/' + that.data.bsName,
       method: "GET",
       success: function (res) {
         console.log("车棚数据")
@@ -37,15 +37,14 @@ Page({
 
         var templist = []
         for (var i = 0; i < res.data.data.length; i++) {
-        if(res.data.data[i].type == type)
-        {
-          templist.push(res.data.data[i])
-        }
+          if (res.data.data[i].type == type) {
+            templist.push(res.data.data[i])
+          }
         }
         // console.log("首页——获取的附近车棚数据>>>>>>>处理后数据")
         // console.log(templist)
         newsListArr = templist;
-        
+
         if (!res.data.data.length) {
           that.setData({
             onLoad: false

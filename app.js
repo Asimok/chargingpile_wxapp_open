@@ -5,7 +5,11 @@ App({
     var logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
-
+     //云开发初始化
+    wx.cloud.init({
+      env: 'chargingpile-open-2e45ie53ac534d',
+      traceUser: true
+     })
     // 登录
     wx.login({
       success: res => {

@@ -1,7 +1,7 @@
 //支付成功后跳转
 const mqtt = require('../../utils/mqtt.min.js');
 const clientId = "wx_open" + Date.parse(new Date());
-var url = 'wx://www.hzsmartnet.com:8083/mqtt';
+var url = 'wxs://www.hzsmartnet.com:8883/mqtt';
 var client = mqtt.connect(url, {
   clientId: clientId
 });
@@ -149,7 +149,7 @@ Page({
     var that = this
     //获取车棚名称
     wx.request({
-      url: 'http://www.hzsmartnet.com/bikeshed/name',
+      url: 'https://www.hzsmartnet.com/bikeshed/name',
       method: "GET",
       data: {
         "bsId": that.data.bsID
@@ -219,7 +219,7 @@ Page({
   openbook: function () {
 
     wx.request({
-      url: 'http://www.hzsmartnet.com/open/book',
+      url: 'https://www.hzsmartnet.com/open/book',
       method: "POST",
       data: {
         "bsId": this.data.bsID,
