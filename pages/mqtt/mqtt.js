@@ -1,18 +1,18 @@
 //支付成功后跳转
 const mqtt = require('../../utils/mqtt.min.js');
 const clientId = "wx_open" + Date.parse(new Date());
-var url = 'wxs://www.hzsmartnet.com:8883/mqtt';
+
+var url = 'wxs://www.hzsmartnet.com:443/mqtt';
 var client = mqtt.connect(url, {
   clientId: clientId
 });
 client.on('connect', function () {
   console.log('MQTT连接成功');
-  wx.showToast({
-    title: "MQTT连接成功", // 标题
-    icon: "success", // 图标类型，默认success
-    duration: 2000 // 提示窗停留时间，默认1500ms
-  })
-
+  // wx.showToast({
+  //   title: "MQTT连接成功", // 标题
+  //   icon: "success", // 图标类型，默认success
+  //   duration: 2000 // 提示窗停留时间，默认1500ms
+  // })
 });
 
 Page({
@@ -29,14 +29,13 @@ Page({
     grp: "",
     restTime: "",
     openId: "",
-
     charge_time: "",
     fee: ""
   },
   onLoad: function (e) {
     console.log("mqtt界面收到的参数")
-    // var test = '{"bsID":"250","chargeID":"230602NEPU001","grp":"D001","chargePort":"RT01","restTime":216000000,"openId":"oxiix4rhiv1av9T834QExcFmcbRA","topic":"230602NEPU001","charge_time":"240","fee":1}'
-    var test = e.data
+    // var test = '{"bsID":"250","chargeID":"3EAD57DF543423ED","grp":"D002","chargePort":"RT01","restTime":216000000,"openId":"oxiix4rhiv1av9T834QExcFmcbRA","topic":"3EAD57DF543423ED","charge_time":"240","fee":1}'
+  var test = e.data
     this.connectMqtt(test)
   },
   connectMqtt: function (test) {
@@ -81,6 +80,14 @@ Page({
         console.log("解析消息");
         //console.log(No)
         //No相同的话开始充电成功
+
+       
+        that.setData({
+          isShow: false,
+          status: "正在充电"
+        })
+      
+
         that.show_opened_chargingpile()
       }
     })
@@ -113,7 +120,7 @@ Page({
   //订阅
   subscribe: function () {
     var that = this
-    const tmplids = ["ESYI5HQSnW-5Ts27iyp1NwnyVrIgKgMS_2alhYw6JXM","_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ"]
+    const tmplids = ["_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ","ESYI5HQSnW-5Ts27iyp1NwnyVrIgKgMS_2alhYw6JXM"]
     console.log("订阅")
     console.log(tmplids)
     wx.requestSubscribeMessage({
@@ -121,7 +128,7 @@ Page({
       success(res) {
         console.log("订阅成功")
         console.log(res)
-        that.get_access_token()
+        that.getName()
       },
       fail(res) {
         console.log("订阅失败")
@@ -130,26 +137,13 @@ Page({
     })
 
   },
-  //获取access_token
-  get_access_token: function () {
-    var that = this
-    var access_token = ''
-    wx.request({
-      url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3',
-      method: 'GET',
-      success: function (res) {
-        // console.log(res)
-        access_token = res.data.access_token
-        that.getName(access_token)
-      }
-    })
-  },
+
   //获取车棚名称
-  getName(ACCESS_TOKEN) {
+  getName() {
     var that = this
     //获取车棚名称
     wx.request({
-      url: 'https://www.hzsmartnet.com/bikeshed/name',
+      url: 'https://www.hzsmartnet.com:8082/bikeshed/name',
       method: "GET",
       data: {
         "bsId": that.data.bsID
@@ -162,18 +156,21 @@ Page({
 
         } else {
           that.data.bsName = res.data.bsName
-          that.send(ACCESS_TOKEN)
+          // that.send(ACCESS_TOKEN)
+          //  that.sendNew()
+          
+          that.btn_charge_open()
         }
       }
     })
-    console.log("车棚名称" + that.data.bsName)
+    console.log("车棚名称    " + that.data.bsName)
 
   },
   //推送
   send: function (ACCESS_TOKEN) {
     console.log("推送")
     console.log("获取车棚名称")
-  
+
     var that = this
     console.log(that.data.fee)
     wx.request({
@@ -196,7 +193,7 @@ Page({
             "value": that.data.chargePort
           },
           "thing5": {
-            "value": that.data.charge_time +"分钟"
+            "value": that.data.charge_time + "分钟"
           },
           "amount10": {
             "value": that.data.fee + "元"
@@ -215,11 +212,80 @@ Page({
       }
     })
   },
+  send_yun: function () {
+
+    console.log("进行推送")
+    var that = this
+    exports.main = async (event, context) => {
+    const result = await cloud.openapi.subscribeMessage.send({
+      "touser": that.data.openId,
+      page: 'main',
+      lang: 'zh_CN',
+      data: {
+        thing1: {
+          value: that.data.bsName
+        },
+        character_string2: {
+          value: that.data.chargeID
+        },
+        thing14: {
+          value: that.data.chargePort
+        },
+        thing5: {
+          value: that.data.charge_time + "分钟"
+        },
+        amount10: {
+          value: that.data.fee + "元"
+        }
+
+      },
+      templateId: 'T_XkeRL42L12IeT01G0n6BdIYJlh3s23yPMOK0dM83nQ',
+      miniprogramState: 'developer'
+    })
+
+    console.log("云函数")
+    console.log(result)
+  }
+
+  },
+  sendNew:function(){
+    var that = this
+    
+    wx.cloud.callFunction({
+      // 要调用的云函数名称
+      name: 'sendNew',
+      // 传递给云函数的参数
+      data: {
+        openid: that.data.openId,
+        thing11:that.data.bsName,
+        character_string21:that.data.chargeID,
+        thing141:that.data.chargePort,
+        thing51:that.data.charge_time + "分钟",
+        amount101:that.data.fee + "元"
+      },
+     
+      success: res => {
+      
+        console.log("推送成功")
+        console.log(res)
+        that.setData({
+          isShow: false,
+          status: "正在充电"
+        })
+        that.btn_charge_open()
+      },
+      fail: err => {
+        console.log(err)
+        console.log("推送失败")
+
+      },
+    })
+},
   //调用充电接口
   openbook: function () {
-
+var that =this
     wx.request({
-      url: 'https://www.hzsmartnet.com/open/book',
+      url: 'https://www.hzsmartnet.com:8082/open/book',
       method: "POST",
       data: {
         "bsId": this.data.bsID,
@@ -228,19 +294,20 @@ Page({
         "portWay": this.data.chargePort,
         "restTime": this.data.charge_time * 60 * 1000,
         "openId": this.data.openId,
-        "price":this.data.fee
+        "price": this.data.fee
       },
       success: function (res) {
         console.log("充电成功接口")
         console.log(res)
+       
       }
     })
   },
   //开始充电
   open_tap: function () {
-   
     this.subscribe()
-
+    // this.sendNew()
+    // this.btn_charge_open()
   },
 
 })

@@ -4,9 +4,8 @@
     "headerView":"/component/headerView/headerView",
     "footerView": "/component/footerView/footerView",
     "loadView":"/component/loadView/loadView"
-
   },
   "enablePullDownRefresh":true,
-  "navigationBarTitleText":"历史记录"
-
+  "navigationBarTitleText":"历史记录-下拉刷新"
+  
 }

@@ -7,75 +7,36 @@ Page({
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         isHide: false,
         user_openid: '',
-        user_code: '',
-        user_data: ''
+    
     },
     onLoad: function () {
-        var that = this;
-        // 查看是否授权
-        wx.getSetting({
-            success: function (res) {
-                if (res.authSetting['scope.userInfo']) {
-                    wx.getUserInfo({
-                        success: function (res) {
-                            wx.login({
-                                success: res => {
-                                    // 获取到用户的 code 之后：res.code
-                                    that.setData({
-                                        user_code: res.code
-                                    })
-                                    console.log("用户的code login:  login界面>>>" + res.code);
-                                    wx.request({
-                                        url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wx0f57e9c304a06353&secret=6a6bced7ba1ad4bfefd03ab4a100e0d3&js_code=' + res.code + '&grant_type=authorization_code',
-                                        success: res => {
-                                            // 获取到用户的 openid
-                                            that.setData({
-                                                user_openid: res.data.openid
-                                            })
-
-                                            console.log("用户的openid:  login界面>>>" + res.data.openid);
-                                            console.log(res)
-
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    // 用户没有授权
-                    // 改变 isHide 的值，显示授权页面
-                    that.setData({
-                        isHide: true
-                    });
-                }
-            }
-        });
+     this.get_openid()
     },
+    get_openid: function () {
+        var that = this;
+        wx.cloud.callFunction({
+          name: 'get_openId',
+          complete: res => {
+            console.log('云函数获取到的openid:')
+            console.log(res.result)
+            var openid = res.result.openId;
+            if (openid != "") {
+              that.setData({
+                user_openid: openid
+              })
+            
+            } else {
+              that.setData({
+                user_openid: ""
+              })
+              that.get_openid()
+            }
+          }
+        });
+    
+      },
     bindGetUserInfo: function (e) {
-        if (e.detail.userInfo) {
-            //用户按了允许授权按钮
-            var that = this;
-            //授权成功后,通过改变 isHide 的值，让实现页面显示出来，把授权页面隐藏起来
-            that.setData({
-                isHide: true
-            });
-            that.UserLogin();
-        } else {
-            //用户按了拒绝按钮
-            wx.showModal({
-                title: '警告',
-                content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
-                showCancel: false,
-                confirmText: '返回授权',
-                success: function (res) {
-                    // 用户没有授权成功，不需要改变 isHide 的值
-                    if (res.confirm) {
-                        console.log('用户点击了“返回授权”');
-                    }
-                }
-            });
-        }
+        this.UserLogin(this.data.user_openid)
     },
     UserLogin: function () {
         var temp_send_data = {
@@ -84,7 +45,7 @@ Page({
         console.log("发送到后端的用户信息： ");
         console.log(temp_send_data);
         wx.request({
-            url: 'https://www.hzsmartnet.com/login/open',
+            url: 'https://www.hzsmartnet.com:8082/login/open',
             method: "POST",
             data: temp_send_data,
             // 解析注册状态
@@ -106,7 +67,6 @@ Page({
             }
         })
     },
-
     register: function () {
         console.log("手机号注册");
         console.log("openid  to verification_code:" + this.data.user_openid);

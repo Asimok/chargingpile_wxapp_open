@@ -1,10 +1,10 @@
 {
   "pages": [
     "pages/main/main",
-    "pages/login/login",
-    "pages/mqtt/mqtt",
-    "pages/video/video",
     "pages/pay/pay",
+    "pages/mqtt/mqtt",
+    "pages/login/login",
+    "pages/video/video",
     "pages/search_bikeshed/search_bikeshed",
     "pages/history/history",
     "pages/verification_code/verification_code",

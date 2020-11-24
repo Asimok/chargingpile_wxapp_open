@@ -11,6 +11,7 @@ Page({
     topic: "",
     fee: "",
     charge_time: "-",
+    canuse: "",
     items: [{
         name: '1',
         value: '1元',
@@ -28,6 +29,10 @@ Page({
         name: '4',
         value: '4元'
       },
+      {
+        name: '5',
+        value: '5元'
+      },
     ]
   },
   onLoad: function (e) {
@@ -40,7 +45,8 @@ Page({
       grp: rec_data_json.grp,
       chargePort: rec_data_json.chargePort,
       topic: rec_data_json.topic,
-      openId: rec_data_json.openId
+      openId: rec_data_json.openId,
+      canuse: rec_data_json.canuse
     })
 
     this.getPrice1()
@@ -49,7 +55,7 @@ Page({
     var that = this
     //请求1元的价格
     wx.request({
-      url: 'https://www.hzsmartnet.com/money/get/' + this.data.bsID,
+      url: 'https://www.hzsmartnet.com:8082/money/get/' + this.data.bsID,
       method: "GET",
       success: function (res) {
         var getLIst = []
@@ -65,7 +71,7 @@ Page({
         console.log("1元充电时长")
         console.log(that.data.charge_time)
         that.setData({
-          payTime: that.data.charge_time
+          payTime: that.data.charge_time / 60
         })
         that.data.fee = 1
 
@@ -80,7 +86,7 @@ Page({
     this.data.fee = e.detail.value
     console.log('radio发生change事件，携带value值为：', checkPrice)
     wx.request({
-      url: 'https://www.hzsmartnet.com/money/get/' + that.data.bsID,
+      url: 'https://www.hzsmartnet.com:8082/money/get/' + that.data.bsID,
       method: "GET",
       success: function (res) {
         var getLIst = []
@@ -96,7 +102,7 @@ Page({
         console.log("充电时长")
         console.log(that.data.charge_time)
         that.setData({
-          payTime: that.data.charge_time
+          payTime: that.data.charge_time / 60
         })
 
       }
@@ -106,27 +112,43 @@ Page({
   //获取车棚名称
   getName() {
     var that = this
-    //获取车棚名称
-    wx.request({
-      url: 'https://www.hzsmartnet.com/bikeshed/name',
-      method: "GET",
-      data: {
-        "bsId": that.data.bsID
-      },
-      success: function (res) {
-        console.log("获取车棚名称")
-        console.log(res)
-        if (res.data.bsName == "-1") {
-          that.data.bsName = "暂未录入车棚名称"
+    if (this.data.canuse)
 
-        } else {
-          that.data.bsName = res.data.bsName
-          that.getpaydata()
+    {
+      var that = this
+      //获取车棚名称
+      wx.request({
+        url: 'https://www.hzsmartnet.com:8082/bikeshed/name',
+        method: "GET",
+        data: {
+          "bsId": that.data.bsID
+        },
+        success: function (res) {
+          console.log("获取车棚名称")
+          console.log(res)
+          if (res.data.bsName == "-1") {
+            that.data.bsName = "暂未录入车棚名称"
+
+          } else {
+            that.data.bsName = res.data.bsName
+            that.getpaydata()
+          }
         }
-      }
-    })
-    console.log("车棚名称" + that.data.bsName)
-
+      })
+      console.log("车棚名称" + that.data.bsName)
+    } else {
+      wx.showModal({
+        title: '提示',
+        content: '注册登录之后才可以进行充电！',
+        success(res) {
+          if (res.confirm) {
+            that.bindGetUserInfo()
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    }
   },
   //后端支付接口 下订单
   getpaydata: function (e) {
@@ -148,7 +170,7 @@ Page({
     console.log(temp_json)
 
     wx.request({
-      url: 'https://www.hzsmartnet.com/pay',
+      url: 'https://www.hzsmartnet.com:8082/pay',
       method: "POST",
       data: temp_json,
       success: (res) => {
@@ -219,6 +241,11 @@ Page({
     //跳转
     wx.redirectTo({
       url: '/pages/mqtt/mqtt?data=' + str,
+    })
+  },
+  bindGetUserInfo: function () {
+    wx.reLaunch({
+      url: '/pages/login/login',
     })
   }
 })

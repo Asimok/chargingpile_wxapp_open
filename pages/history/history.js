@@ -7,16 +7,32 @@ Page({
     open_id: "",
   },
   onLoad: function (options) {
+
     wx.showLoading({
       title: '加载中...',
     })
     this.get_openid()
   },
-  onShow(){
-    //调用函数、方法
-    var that=this;
-    that.onLoad();
-},
+  //   onShow(){
+  //     //调用函数、方法
+  //     var that=this;
+  //     that.onLoad();
+  // },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: function () {
+       //在当前页面显示导航条加载动画
+       wx.showNavigationBarLoading();
+       //显示 loading 提示框。需主动调用 wx.hideLoading 才能关闭提示框
+       wx.showLoading({
+         title: '刷新中...',
+       })
+       var that = this;
+       that.onLoad();
+  },
+
   // 网络请求核心函数
   getRequest: function () {
     console.log("request里的openid")
@@ -25,7 +41,7 @@ Page({
     var newsListArr = [];
 
     wx.request({
-      url: 'https://www.hzsmartnet.com/open/history',
+      url: 'https://www.hzsmartnet.com:8082/open/history',
       data: {
         "openId": that.data.open_id
       },
@@ -48,7 +64,7 @@ Page({
             newsListArr[i].chargeStatus = "正在充电"
           } else
             newsListArr[i].chargeStatus = "已完成"
-          newsListArr[i].price = newsListArr[i].price / 100 + " 元"
+          newsListArr[i].price = newsListArr[i].price + " 元"
 
         }
 
@@ -86,5 +102,4 @@ Page({
     });
 
   },
-
 })

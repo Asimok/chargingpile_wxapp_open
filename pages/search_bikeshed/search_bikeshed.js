@@ -1,4 +1,4 @@
-const type = 3
+const type = 1
 Page({
 
   data: {
@@ -27,7 +27,7 @@ Page({
     console.log("要搜索的车棚名称")
     console.log(that.data.bsName)
     wx.request({
-      url: 'https://www.hzsmartnet.com/bikeshed/' + that.data.bsName,
+      url: 'https://www.hzsmartnet.com:8082/bikeshed/' + that.data.bsName,
       method: "GET",
       success: function (res) {
         console.log("车棚数据")

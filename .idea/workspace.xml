@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="176b1586-3324-41b7-b688-b03f3a5c436a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/get_openId/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/functions/get_openId/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/history/history.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/history/history.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/login/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/login/login.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/pages/login/login.wxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/main/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/main/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/main/main.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/pages/main/main.wxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/mostuse/mostuse.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/mostuse/mostuse.js" afterDir="false" />
@@ -33,6 +36,12 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -46,6 +55,8 @@
       <workItem from="1605195351452" duration="22000" />
       <workItem from="1605196169485" duration="20000" />
       <workItem from="1605444964868" duration="49000" />
+      <workItem from="1605873336723" duration="34000" />
+      <workItem from="1605873733846" duration="318000" />
     </task>
     <servers />
   </component>
@@ -53,10 +64,10 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="594" y="161" width="604" height="730" key="find.popup" timestamp="1605445011490">
+    <state x="594" y="161" width="604" height="730" key="find.popup" timestamp="1605873750867">
       <screen x="0" y="25" width="1792" height="1002" />
     </state>
     <state x="594" y="160" width="604" height="735" key="find.popup/0.23.1792.1009@0.23.1792.1009" timestamp="1605196184523" />
-    <state x="594" y="161" width="604" height="730" key="find.popup/0.25.1792.1002@0.25.1792.1002" timestamp="1605445011490" />
+    <state x="594" y="161" width="604" height="730" key="find.popup/0.25.1792.1002@0.25.1792.1002" timestamp="1605873750867" />
   </component>
 </project>

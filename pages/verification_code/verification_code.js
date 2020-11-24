@@ -125,7 +125,7 @@ Page({
     var phoneNum = this.data.phoneNum;
     
     wx.request({
-      url: 'https://www.hzsmartnet.com/vc/getCode',
+      url: 'https://www.hzsmartnet.com:8082/vc/getCode',
       data: {
         phone: phoneNum
       },
@@ -179,7 +179,7 @@ Page({
     console.log(that.data.phoneNum)
     console.log(that.data.openId)
     wx.request({
-      url: 'https://www.hzsmartnet.com/register/open',
+      url: 'https://www.hzsmartnet.com:8082/register/open',
       data: {
         telNumber: that.data.phoneNum,
         openId: that.data.openId,

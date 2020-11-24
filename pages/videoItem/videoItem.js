@@ -45,7 +45,7 @@ Page({
     var temp_json = {"openId":this.data.openId};
     console.log(temp_json)
     wx.request({
-      url:'https://www.hzsmartnet.com/open/camera',
+      url:'https://www.hzsmartnet.com:8082/open/camera',
       data:{"openId":this.data.openId},
       method: "GET",
   

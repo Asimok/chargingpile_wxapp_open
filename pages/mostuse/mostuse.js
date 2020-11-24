@@ -48,7 +48,7 @@ Page({
     var temp_json = {"openId":this.data.openId};
     console.log(temp_json)
     wx.request({
-      url:'https://www.hzsmartnet.com/bikeshed/commonbs?openid='+this.data.openId+'&number=-1',
+      url:'https://www.hzsmartnet.com:8082/bikeshed/commonbs?openid='+this.data.openId+'&number=-1',
       method: "GET",
   
       success: function (res) {

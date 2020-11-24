@@ -15,28 +15,34 @@
 
 	<view class="subject">
 		<view class="subBox">
-			<navigator url="/pages/nearby/nearby" bindtap="is_near_canuse">
-				<image src="/images/kecheng6.png"></image>
+			<navigator url="/pages/nearby/nearby"  >
+				
+				
+				<image src="https://asimov-1258043582.cos.ap-nanjing.myqcloud.com/img/20201123211541.png"></image>
 				<view>附近车棚</view>
 			</navigator>
 		</view>
 		<view class="subBox">
 			<navigator url="/pages/mostuse/mostuse" bindtap="is_near_canuse">
-				<image src="/images/kecheng2.png"></image>
+				<!-- <image src="/images/kecheng2.png"></image> -->
+				<image src="https://asimov-1258043582.cos.ap-nanjing.myqcloud.com/img/20201123211405.png"></image>
+				
 				<view>常用站点</view>
 			</navigator>
 		</view>
 
 		<view class="subBox">
-			<navigator url="/pages/search_bikeshed/search_bikeshed" bindtap="is_near_canuse">
-				<image src="/images/kecheng3.png"></image>
+			<navigator url="/pages/search_bikeshed/search_bikeshed" >
+				<!-- <image src="/images/kecheng3.png"></image> -->
+				<image src="https://asimov-1258043582.cos.ap-nanjing.myqcloud.com/img/20201123211755.png"></image>
 				<view>搜索车棚</view>
 			</navigator>
 		</view>
 
 	<view class="subBox">
 			<navigator url="/pages/videoItem/videoItem" bindtap="is_near_canuse">
-				<image src="/images/kecheng4.png"></image>
+				<!-- <image src="/images/kecheng4.png"></image> -->
+				<image src="https://asimov-1258043582.cos.ap-nanjing.myqcloud.com/img/20201123211804.png"></image>
 				<view>查看监控</view>
 			</navigator>
 		</view>
@@ -47,7 +53,7 @@
 
 	<view class="content">
 		<block wx:for="{{listArr}}" wx:key="key">
-			<nearbyView datas="{{item}}" bindtap="is_near_canuse"> </nearbyView>
+			<nearbyView datas="{{item}}" > </nearbyView>
 		</block>
 	</view>
 

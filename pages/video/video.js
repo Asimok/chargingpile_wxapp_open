@@ -3,7 +3,7 @@ Page({
     // src: 'https://tx1.yunchuanglive.com/live/SSAA-147833-DFFEC.m3u8',
     status: '',
     stopVideo: true,
-    second: 120
+    second: 60
   },
   onLoad: function (e) {
     console.log("带来监控界面的参数")
@@ -58,6 +58,4 @@ Page({
       status: code + " : " + text
     })
   }
-
-
 })
